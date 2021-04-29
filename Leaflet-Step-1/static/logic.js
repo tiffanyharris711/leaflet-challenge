@@ -21,8 +21,11 @@ function createFeatures(earthquakeData) {
         feature.properties.place +
         "</h3><hr><p>" +
         new Date(feature.properties.time) +
-        "</p>"
-    );
+        "</p><h4><hr><p>" +
+        "Magnitude: " + (feature.properties.mag) +
+        " |          Depth: " + (feature.geometry.coordinates[2]) +
+        "</p></h4>"
+        );
   }
 
   function getRadius(magnitude) {
@@ -34,13 +37,13 @@ function createFeatures(earthquakeData) {
 
   function getColor(depth) {
     switch (true) {
-      case depth > 20:
+      case depth > 40:
         return "#EA202C";
-      case depth > 15:
+      case depth > 30:
         return "#FD4D0C";
-      case depth > 10:
+      case depth > 20:
         return "#FB9902";
-      case depth > 5:
+      case depth > 10:
         return "#FDDC22";
       case depth > 1:
         return "#E4F132";
@@ -48,16 +51,6 @@ function createFeatures(earthquakeData) {
         return "#afff14";
     }
   }
-
-  // function getColor(depth) {
-  //   return  depth > 20  ? "#EA202C":
-  //           depth > 15  ? "#FD4D0C":
-  //           depth > 10  ? "#FB9902":
-  //           depth > 5   ? "#FDDC22":
-  //           depth > 1   ? "#E4F132":
-  //                         "#afff14";
-  //   }
-  // }
 
   function circleStyle(feature) {
     return {
@@ -110,7 +103,7 @@ function createMap(earthquakes) {
 
   legend.onAdd = function () {
     var div = L.DomUtil.create("div", "info legend");
-    var grades = [1, 5, 10, 15, 20];
+    var grades = [1, 10, 20, 30, 40];
     var colors = [
       "#afff14",
       "#E4F132",
@@ -120,18 +113,22 @@ function createMap(earthquakes) {
       "#EA202C"
     ];
 
-    // loop through our density intervals and generate a label with a colored square for each interval
+    // loop through our magnitude and generate a label with a colored square for each interval
+    var legendInfo = "<h3>Depth of Earthquakes</h3>"
+    div.innerHTML = legendInfo;
+
     for (var i = 0; i < grades.length; i++) {
       div.innerHTML +=
         "<i style='background: " +
         colors[i] +
         "'></i> " +
         grades[i] +
-        (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+");
+        (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<p>" : "+");
     }
-    // div.innerHTML = colors.join('<br>');
+
     return div;
   };
+
 
   legend.addTo(myMap);
 
